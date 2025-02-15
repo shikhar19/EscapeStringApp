@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online String Escaper</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 10px;
+            font-family: monospace;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Online String Escaper</h1>
+        
+        <div>
+            <label for="input">Original String:</label>
+            <textarea id="input" placeholder="Enter your string here..."></textarea>
+        </div>
+        
+        <div>
+            <label for="output">Escaped String:</label>
+            <textarea id="output" readonly></textarea>
+        </div>
+
+        <div class="button-group">
+            <button id="copy-btn">Copy Escaped String</button>
+        </div>
+    </div>
+
+    <script>
+        function escapeString(str) {
+            return str.replace(/[\0-\x1f\x22\x27\x5c\x7f-\x9f]/g, function (char) {
+                switch (char) {
+                    case '\"': return '\\"';
+                    case '\'': return "\\'";
+                    case '\\': return '\\\\';
+                    case '\n': return '\\n';
+                    case '\r': return '\\r';
+                    case '\t': return '\\t';
+                    case '\b': return '\\b';
+                    case '\f': return '\\f';
+                    case '\v': return '\\v';
+                    default:
+                        const code = char.charCodeAt(0);
+                        return '\\x' + code.toString(16).padStart(2, '0');
+                }
+            });
+        }
+
+        // Real-time escaping
+        document.getElementById('input').addEventListener('input', function (e) {
+            const escaped = escapeString(e.target.value);
+            document.getElementById('output').value = escaped;
+        });
+
+        // Copy functionality
+        document.getElementById('copy-btn').addEventListener('click', function () {
+            const output = document.getElementById('output');
+            output.select();
+            try {
+                document.execCommand('copy');
+                alert('Copied to clipboard!');
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+            }
+        });
+    </script>
+</body>
+</html>
